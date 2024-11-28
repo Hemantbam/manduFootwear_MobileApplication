@@ -1,28 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { styles } from "./SignUpStyle";
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { registerUser } from "@/api/authApi";
+import { UserRegistrationDetails } from "@/context/Context";
 
 function SignUp() {
-  const [userDetails, setUserDetails] = useState({
-    username: "",
-    email: "",
-    mobileNumber: "",
-    gender: "",
-    occupation: "",
-    address: "",
-    password: "",
-  });
+
+  const { userDetails, setUserDetails } = useContext(UserRegistrationDetails);
 
   const handleUserRegistration = async () => {
+    console.log(userDetails)
     try {
       const result = await registerUser(userDetails);
       if (result.status == 200) {
@@ -52,9 +39,7 @@ function SignUp() {
                 <TextInput
                   placeholder="Username"
                   value={userDetails.username}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, username: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, username: text })}
                 />
               </View>
 
@@ -64,9 +49,7 @@ function SignUp() {
                   placeholder="Email"
                   keyboardType="email-address"
                   value={userDetails.email}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, email: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, email: text })}
                 />
               </View>
 
@@ -76,9 +59,7 @@ function SignUp() {
                   placeholder="Mobile"
                   keyboardType="phone-pad"
                   value={userDetails.mobileNumber}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, mobileNumber: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, mobileNumber: text })}
                 />
               </View>
 
@@ -87,9 +68,7 @@ function SignUp() {
                 <TextInput
                   placeholder="Gender"
                   value={userDetails.gender}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, gender: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, gender: text })}
                 />
               </View>
 
@@ -98,9 +77,7 @@ function SignUp() {
                 <TextInput
                   placeholder="Occupation"
                   value={userDetails.occupation}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, occupation: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, occupation: text })}
                 />
               </View>
 
@@ -109,9 +86,7 @@ function SignUp() {
                 <TextInput
                   placeholder="Address"
                   value={userDetails.address}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, address: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, address: text })}
                 />
               </View>
 
@@ -121,9 +96,7 @@ function SignUp() {
                   placeholder="Password"
                   secureTextEntry={true}
                   value={userDetails.password}
-                  onChangeText={(text) =>
-                    setUserDetails({ ...userDetails, password: text })
-                  }
+                  onChangeText={(text) => setUserDetails({ ...userDetails, password: text })}
                 />
               </View>
             </View>
