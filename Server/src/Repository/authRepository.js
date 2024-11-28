@@ -1,6 +1,6 @@
 import dbConn from "../../config/db/dbConn.js";
 
-export const userRegister = async (userDetails) => {
+export const userRegister = async (userDetails, password) => {
   const query =
     "Insert into users (username, email, mobileNumber,gender,occupation,address,password,created_at) values(?,?,?,?,?,?,?,Now())";
   const [result] = await dbConn.query(query, [
@@ -10,7 +10,7 @@ export const userRegister = async (userDetails) => {
     userDetails.gender,
     userDetails.occupation,
     userDetails.address,
-    userDetails.password,
+    password,
   ]);
   if (result.affectedRows > 0) {
     return true;
@@ -21,7 +21,6 @@ export const userRegister = async (userDetails) => {
 export const getUser = async (email) => {
   const query = "select * from users where email=?";
   const [result] = await dbConn.query(query, [email]);
-  console.log(result)
   if (result.length > 0) {
     return result[0];
   }
