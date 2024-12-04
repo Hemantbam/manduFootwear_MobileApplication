@@ -5,7 +5,6 @@ import SignUp from "@/Screens/SignUp/SignUp";
 import HomePage from "@/Screens/Home/HomePage";
 import OtpValidation from "@/Screens/OtpValidationScreen/OtpValidation";
 import { UserRegistrationContextProvider } from "@/context/UserDetails";
-import Sample from "@/Screens/Sample";
 import Toast from "react-native-toast-message";
 import ShoeDetails from "@/Screens/ShoeDetails/ShoeDetails";
 import ShoeCart from "@/Screens/ShoeCart/ShoeCart";
@@ -33,11 +32,6 @@ export default function RootLayout() {
         <Stack.Screen
           name="registrationValidation"
           component={OtpValidation}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="test"
-          component={Sample}
           options={{ headerShown: false }}
         />
 

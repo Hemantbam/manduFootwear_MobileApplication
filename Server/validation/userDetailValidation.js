@@ -14,7 +14,7 @@ export const userValidationSchema = Joi.object({
   }),
 
   mobileNumber: Joi.string()
-    .pattern(/^[0-9]{10}$/)
+    .pattern(/^[0-9]{10}$/) 
     .required()
     .messages({
       "string.pattern.base": "Mobile number must be 10 digits.",

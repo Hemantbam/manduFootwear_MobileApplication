@@ -2,8 +2,23 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { styles } from "./CheckOutStyle";
 import { useNavigation } from "@react-navigation/native";
+import Navigation from "@/components/NavigationBar/Navigation";
+import Toast from "react-native-toast-message";
 function CheckOut() {
   const navigation = useNavigation();
+
+  const handelPayment=()=>{
+    Toast.show({
+      type: "success",
+      position: "top",
+      text1: "Order Successfull",
+      text2: "Your order has been placed successfully",
+      visibilityTime:2000,
+    })
+    setTimeout(()=>{
+      navigation.navigate('home')
+    },2200)
+  }
   return (
     <>
       <View style={styles.checkOutContainer}>
@@ -89,17 +104,27 @@ function CheckOut() {
         </View>
 
         <View style={styles.orderSummaryBox}>
-          <Text>Order Summary</Text>
+          <Text style={styles.orderSummaryHeadingText}>Order Summary</Text>
 
-          <View style={styles.horizontalLine}></View>
+          <View style={styles.orderSummaryHorizontalLine}></View>
 
-          <View>
+          <View style={styles.orderSummary}>
             <Text>Cost Price: 6,500/-</Text>
             <Text>Discount: 500/-</Text>
             <Text>Delivery: 200/-</Text>
-            <Text>Total: 6,200/-</Text>
+            <Text style={styles.totalPrice}>Total: 6,200/-</Text>
           </View>
+          <Text style={styles.paymentModeText}>Available Payment Mode: COD</Text>
+          
+          <TouchableOpacity onPress={handelPayment}>
+            <View style={styles.paymentBtn}>
+              <Text style={styles.paymentBtnText}>Place Order</Text>
+            </View>
+          </TouchableOpacity>
         </View>
+      </View>
+      <View style={styles.footerSection}>
+        <Navigation />
       </View>
     </>
   );

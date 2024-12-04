@@ -12,9 +12,15 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return res.status(401).json({ message: "Unauthorized token" });
     }
-    req.user = decoded;
+    req.user = decoded.userDetails;
     next();
   });
 };
 
-export { verifyToken };
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Unauthorized user access" });
+  }
+  next();
+};
+export { verifyToken, isAdmin };
