@@ -49,3 +49,13 @@ export const userValidationSchema = Joi.object({
       "any.required": "Password is required.",
     }),
 });
+
+export const userLoginInputValidation = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.email": "Please enter a valid email address.",
+    "any.required": "Email is required.",
+  }),
+  password: Joi.string().required().messages({
+    "any.required": "Password is required.",
+  }),
+});

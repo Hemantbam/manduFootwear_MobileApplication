@@ -60,6 +60,10 @@ export const styles = StyleSheet.create({
     borderColor: "#000000",
     marginBottom: 10,
   },
+  textInputStyle: {
+    height: 35,
+    width: 280,
+  },
   signUpFormLabel: {
     textAlign: "left",
     marginBottom: 5,
@@ -91,4 +95,18 @@ export const styles = StyleSheet.create({
   registerText: {
     fontWeight: 800,
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 10,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkboxLabel: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  
 });

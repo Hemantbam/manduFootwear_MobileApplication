@@ -2,7 +2,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { userRegister } from "../Repository/authRepository.js";
 import { getUser } from "../Repository/authRepository.js";
-import { userValidationSchema } from "../../validation/userDetailValidation.js";
+import {
+  userLoginInputValidation,
+  userValidationSchema,
+} from "../../validation/userDetailValidation.js";
 import { generateOtpForUserRegistration } from "./sendOtpForRegistration.js";
 import { verifyValidOtp } from "./verifyOtp.js";
 import { updateOtpStatus } from "../Repository/generateOtp.js";
@@ -10,9 +13,11 @@ import { updateOtpStatus } from "../Repository/generateOtp.js";
 const key = "keyForFootwearMobileApplication986421@#$*_";
 
 export const registerUser = async (userDetails, otp) => {
+  console.log("asdsdsdds", userDetails, otp);
   try {
     const encodedPassword = await bcrypt.hash(userDetails.password, 10);
     const otpVerify = await verifyValidOtp(userDetails.email, otp);
+    console.log(otpVerify);
     if (!otpVerify) {
       return {
         success: false,
@@ -22,6 +27,7 @@ export const registerUser = async (userDetails, otp) => {
     }
 
     const createUser = await userRegister(userDetails, encodedPassword);
+    console.log(createUser);
     if (createUser === true) {
       return {
         success: true,
@@ -53,6 +59,7 @@ export const registerUser = async (userDetails, otp) => {
 };
 
 export const generateOtpForRegistration = async (userDetails) => {
+  console.log(userDetails);
   let checkExitingUser = await getUser(userDetails.email);
   if (checkExitingUser) {
     return {
@@ -95,9 +102,24 @@ export const generateOtpForRegistration = async (userDetails) => {
 };
 
 export const userLogin = async (email, password) => {
-  const getUserDetails = await getUser(email);
-  if (getUserDetails) {
-    const decodePassword = bcrypt.compare(password, getUserDetails.password);
+  const userDetails = {
+    email: email,
+    password: password,
+  };
+  try {
+    await userLoginInputValidation.validateAsync(userDetails);
+    const getUserDetails = await getUser(email);
+    if (getUserDetails === false) {
+      return {
+        success: false,
+        status: 404,
+        message: "User not found",
+      };
+    }
+    const decodePassword = await bcrypt.compare(
+      password,
+      getUserDetails.password
+    );
     if (!decodePassword) {
       return {
         success: false,
@@ -120,10 +142,18 @@ export const userLogin = async (email, password) => {
       message: "User authenticated successfully",
       token: token,
     };
+  } catch (error) {
+    if (error.isJoi) {
+      return {
+        success: false,
+        status: 400,
+        message: error.details.map((detail) => detail.message).join(", "),
+      };
+    }
+    return {
+      success: false,
+      status: 500,
+      message: "Internal Server Error",
+    };
   }
-  return {
-    success: false,
-    status: 404,
-    message: "User not found",
-  };
 };

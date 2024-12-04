@@ -1,25 +1,52 @@
 import React, { useContext } from "react";
 import { styles } from "./SignUpStyle";
-import { View, Text, TextInput, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
-import { registerUser } from "@/api/authApi";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { UserRegistrationDetails } from "@/context/Context";
+import { useNavigation } from "@react-navigation/native";
+import { generateOtpForUserRegistration } from "@/api/authApi";
+import Toast from "react-native-toast-message";
 
 function SignUp() {
-
   const { userDetails, setUserDetails } = useContext(UserRegistrationDetails);
+  const navigation = useNavigation();
 
-  const handleUserRegistration = async () => {
-    console.log(userDetails)
+  const handelOtpGeneration = async () => {
+    console.log(userDetails.email);
     try {
-      const result = await registerUser(userDetails);
+      const result = await generateOtpForUserRegistration(userDetails);
+      console.log(result);
       if (result.status == 200) {
-        Alert.alert("Success", "Account created successfully!");
+        Toast.show({
+          type: "success",
+          position: "top",
+          text1: "success",
+          text2: "Otp Sent to email successfully",
+        });
+        navigation.navigate("registrationValidation");
       } else {
-        Alert.alert("Error", result.message || "Registration failed.");
+        Toast.show({
+          type: "error",
+          position: "top",
+          text1: "Error",
+          text2: `${result.message || "Error in generating otp"}`,
+        });
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
-      console.error("Registration Error:", error);
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Error",
+        text2: "Something went wrong please try again",
+      });
+      console.error("Otp generation Error:", error);
     }
   };
 
@@ -37,66 +64,87 @@ function SignUp() {
               <Text style={styles.signUpFormLabel}>Full Name</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Username"
                   value={userDetails.username}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, username: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, username: text })
+                  }
                 />
               </View>
 
               <Text style={styles.signUpFormLabel}>Email</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Email"
                   keyboardType="email-address"
                   value={userDetails.email}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, email: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, email: text })
+                  }
                 />
               </View>
 
               <Text style={styles.signUpFormLabel}>Mobile Number</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Mobile"
                   keyboardType="phone-pad"
                   value={userDetails.mobileNumber}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, mobileNumber: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, mobileNumber: text })
+                  }
                 />
               </View>
 
               <Text style={styles.signUpFormLabel}>Gender</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Gender"
                   value={userDetails.gender}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, gender: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, gender: text })
+                  }
                 />
               </View>
 
               <Text style={styles.signUpFormLabel}>Occupation</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Occupation"
                   value={userDetails.occupation}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, occupation: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, occupation: text })
+                  }
                 />
               </View>
 
               <Text style={styles.signUpFormLabel}>Address</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Address"
                   value={userDetails.address}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, address: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, address: text })
+                  }
                 />
               </View>
 
               <Text style={styles.signUpFormLabel}>Password</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Password"
                   secureTextEntry={true}
                   value={userDetails.password}
-                  onChangeText={(text) => setUserDetails({ ...userDetails, password: text })}
+                  onChangeText={(text) =>
+                    setUserDetails({ ...userDetails, password: text })
+                  }
                 />
               </View>
             </View>
@@ -105,7 +153,7 @@ function SignUp() {
         <View style={styles.registerButtonContainer}>
           <TouchableOpacity
             style={styles.registerBtn}
-            onPress={handleUserRegistration}
+            onPress={handelOtpGeneration}
           >
             <Text style={styles.registerText}>Register</Text>
           </TouchableOpacity>

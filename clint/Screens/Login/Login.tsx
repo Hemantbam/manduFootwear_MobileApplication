@@ -13,6 +13,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { loginUser } from "@/api/authApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 function Login() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
@@ -20,11 +21,23 @@ function Login() {
 
   const handelUserLogin = async () => {
     const result = await loginUser(email, password);
+    console.log(result)
     if (result.status === 200) {
+      Toast.show({
+        type: "success",
+        position: "top",
+        text1: "Success",
+        text2: "Login successfully",
+      });
       await AsyncStorage.setItem("token", `${result.token}`);
       navigation.navigate("home");
     } else {
-      Alert.alert("Login Failed", result.message || "Invalid credentials");
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Login Failed",
+        text2: `${result.message || "Login Failed"}`,
+      });
     }
   };
 
@@ -46,7 +59,7 @@ function Login() {
                   style={styles.icon}
                 />
                 <TextInput
-                  placeholder="Username"
+                  placeholder="Username" style={styles.textInputStyle}
                   value={email}
                   onChangeText={(text) => setEmail(text)}
                 />
@@ -57,7 +70,7 @@ function Login() {
                   source={require("../images/Icons/password.png")}
                   style={styles.icon}
                 />
-                <TextInput
+                <TextInput style={styles.textInputStyle}
                   placeholder="Password"
                   secureTextEntry={true}
                   value={password}

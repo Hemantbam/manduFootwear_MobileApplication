@@ -17,9 +17,9 @@ export const styles = StyleSheet.create({
     top: 10,
     left: 3,
   },
-  shoeDetails:{
-    color:'#ddd',
-    top:10,
+  shoeDetails: {
+    color: "#ddd",
+    top: 10,
+  },
 
-  }
 });

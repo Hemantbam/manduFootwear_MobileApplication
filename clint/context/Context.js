@@ -10,5 +10,5 @@ export const UserRegistrationDetails = React.createContext({
       address: "",
       password: "",
     },
-    setUserDetails: () => {} // Placeholder function for state updater
+    setUserDetails: () => {} 
   });

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Image, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, FontAwesome } from "react-native-vector-icons";
-import Login from "@/Screens/Login/Login"; // Update with your actual screen imports
+import Login from "@/Screens/Login/Login";
 
 const Tab = createBottomTabNavigator();
 

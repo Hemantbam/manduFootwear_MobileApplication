@@ -52,13 +52,19 @@ export const styles = StyleSheet.create({
   },
   inputFields: {
     flexDirection: "row",
-    gap: 80,
+    gap: 50,
+    textAlign: "center",
     alignItems: "center",
     height: 40,
     width: 287,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: "#000000",
+  },
+  textInputStyle: {
+    width: 200,
+    height:35,
+
   },
   forgetText: {
     top: -10,
@@ -111,7 +117,6 @@ export const styles = StyleSheet.create({
     top: 30,
   },
   createAccount: {
-    flexDirection:'row',
-
+    flexDirection: "row",
   },
 });
