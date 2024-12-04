@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { userRegister } from "../Repository/authRepository.js";
-import { getUser } from "../Repository/authRepository.js";
+import { getUserByEmail } from "../Repository/userRepository.js";
 import {
   userLoginInputValidation,
   userValidationSchema,
@@ -60,7 +60,7 @@ export const registerUser = async (userDetails, otp) => {
 
 export const generateOtpForRegistration = async (userDetails) => {
   console.log(userDetails);
-  let checkExitingUser = await getUser(userDetails.email);
+  let checkExitingUser = await getUserByEmail(userDetails.email);
   if (checkExitingUser) {
     return {
       status: 409,
@@ -108,7 +108,7 @@ export const userLogin = async (email, password) => {
   };
   try {
     await userLoginInputValidation.validateAsync(userDetails);
-    const getUserDetails = await getUser(email);
+    const getUserDetails = await getUserByEmail(email);
     if (getUserDetails === false) {
       return {
         success: false,
