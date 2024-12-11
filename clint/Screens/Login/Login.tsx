@@ -45,7 +45,7 @@ function Login() {
     <>
       <View style={styles.ContainerBox}>
         <View style={styles.headerBox}>
-          <Image source={require("../images/logo.png")} />
+          <Image source={require("@/images/Logo/logo.png")} />
         </View>
         <View>
           <View style={styles.backgroundBoxShadow}></View>
@@ -55,7 +55,7 @@ function Login() {
             <View style={styles.logInInputs}>
               <View style={styles.inputFields}>
                 <Image
-                  source={require("../images/Icons/userIcon.png")}
+                  source={require("@/images/Icons/userIcon.png")}
                   style={styles.icon}
                 />
                 <TextInput
@@ -67,7 +67,7 @@ function Login() {
 
               <View style={styles.inputFields}>
                 <Image
-                  source={require("../images/Icons/password.png")}
+                  source={require("@/images/Icons/password.png")}
                   style={styles.icon}
                 />
                 <TextInput style={styles.textInputStyle}
@@ -96,13 +96,13 @@ function Login() {
                 <View style={styles.socialImages}>
                   <TouchableOpacity>
                     <Image
-                      source={require("../images/Icons/facebookIcon.png")}
+                      source={require("@/images/Icons/facebookIcon.png")}
                       style={styles.icon}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity>
                     <Image
-                      source={require("../images/Icons/googleIcon.png")}
+                      source={require("@/images/Icons/googleIcon.png")}
                       style={styles.icon}
                     />
                   </TouchableOpacity>

@@ -28,7 +28,7 @@ function ShoeCart() {
             >
               <Image
                 style={styles.headingIcons}
-                source={require("../images/Icons/backIcon.png")}
+                source={require("@/images/Icons/backIcon.png")}
               ></Image>
             </TouchableOpacity>
 
@@ -41,7 +41,7 @@ function ShoeCart() {
           <View style={styles.cartItemBox}>
             <Image
               style={styles.shoeImage}
-              source={require("@/uploads/shoeImage/nikeImage.png")}
+              source={require("@/images/Uploads/nikeImage.png")}
             ></Image>
             <View style={styles.shoeDetails}>
               <Text style={styles.shoeDetailsText}>Nike Air Max 90</Text>
@@ -68,7 +68,7 @@ function ShoeCart() {
               <View style={styles.deleteIcon}>
                 <Image
                   style={styles.delIconImage}
-                  source={require("../images/Icons/delete.png")}
+                  source={require("@/images/Icons/delete.png")}
                 ></Image>
               </View>
             </TouchableOpacity>

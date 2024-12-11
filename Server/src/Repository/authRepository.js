@@ -18,11 +18,4 @@ export const userRegister = async (userDetails, password) => {
   return false;
 };
 
-export const getUser = async (email) => {
-  const query = "select * from users where email=?";
-  const [result] = await dbConn.query(query, [email]);
-  if (result.length > 0) {
-    return result[0];
-  }
-  return false;
-};
+

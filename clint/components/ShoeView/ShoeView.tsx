@@ -12,9 +12,9 @@ function ShoeView() {
       <View style={styles.shoeContainer}>
         <TouchableOpacity onPress={handleShoeDetails}>
           <View style={styles.shoeImage}>
-            <Image source={require("../Images/shoe.png")} ></Image>
+            <Image source={require("@/images/Uploads/shoe.png")} ></Image>
             <View style={styles.favIcon}>
-              <Image source={require("../Images/Icons/heart.png")}></Image>
+              <Image source={require("@/images/Icons/heart.png")}></Image>
             </View>
 
             <View style={styles.shoeDetails}>

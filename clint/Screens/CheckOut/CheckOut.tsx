@@ -32,7 +32,7 @@ function CheckOut() {
             >
               <Image
                 style={styles.headingIcons}
-                source={require("../images/Icons/backIcon.png")}
+                source={require("@/images/Icons/backIcon.png")}
               ></Image>
             </TouchableOpacity>
 
@@ -64,7 +64,7 @@ function CheckOut() {
             <View style={styles.shoeOrderDetails}>
               <Image
                 style={styles.shoeImage}
-                source={require("@/uploads/shoeImage/nikeImage.png")}
+                source={require("@/images/Uploads/nikeImage.png")}
               ></Image>
               <View>
                 <Text>Nike Air Max 90</Text>
@@ -77,7 +77,7 @@ function CheckOut() {
             <View style={styles.shoeOrderDetails}>
               <Image
                 style={styles.shoeImage}
-                source={require("@/uploads/shoeImage/nikeImage.png")}
+                source={require("@/images/Uploads/nikeImage.png")}
               ></Image>
               <View>
                 <Text>Nike Air Max 90</Text>
@@ -90,7 +90,7 @@ function CheckOut() {
             <View style={styles.shoeOrderDetails}>
               <Image
                 style={styles.shoeImage}
-                source={require("@/uploads/shoeImage/nikeImage.png")}
+                source={require("@/images/Uploads/nikeImage.png")}
               ></Image>
               <View>
                 <Text>Nike Air Max 90</Text>

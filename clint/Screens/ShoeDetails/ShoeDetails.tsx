@@ -32,19 +32,19 @@ function ShoeDetails() {
             >
               <Image
                 style={styles.headingIcons}
-                source={require("../images/Icons/backIcon.png")}
+                source={require("@/images/Icons/backIcon.png")}
               ></Image>
             </TouchableOpacity>
 
             <View style={styles.headingBrandImageContainer}>
               <Image
                 style={styles.headingBrandImage}
-                source={require("../images/BrandImages/nike.png")}
+                source={require("@/images/BrandImages/nike.png")}
               ></Image>
             </View>
             <Image
               style={styles.headingIcons}
-              source={require("../images/Icons/heartIcon.png")}
+              source={require("@/images/Icons/heartIcon.png")}
             ></Image>
           </View>
         </View>
@@ -57,7 +57,7 @@ function ShoeDetails() {
         <View>
           <Image
             style={styles.shoeImage}
-            source={require("@/uploads/shoeImage/nikeImage.png")}
+            source={require("@/images/Uploads/nikeImage.png")}
           ></Image>
           <View style={styles.ShoeImageSlider}>
             <View style={styles.shoeSliderView}></View>

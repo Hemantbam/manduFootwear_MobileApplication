@@ -11,15 +11,15 @@ function HomePage() {
       <View>
         <View style={styles.topBackgroundImageContainer}>
           <View style={styles.headingContainer}>
-            <Image source={require("../images/home.png")}></Image>
+            <Image source={require("@/images/Logo/home.png")}></Image>
 
             <View style={styles.headingItems}>
               <Text style={styles.headingText}>ManduFootware</Text>
               <View style={styles.headingSectionOne}>
-                <Image source={require("../images/Icons/menu.png")}></Image>
+                <Image source={require("@/images/Icons/menu.png")}></Image>
 
                 <View style={styles.searchBar}>
-                  <Image source={require("../images/Icons/search.png")}></Image>
+                  <Image source={require("@/images/Icons/search.png")}></Image>
 
                   <TextInput
                     style={styles.textInput}
@@ -28,7 +28,7 @@ function HomePage() {
                 </View>
 
                 <Image
-                  source={require("../images/Icons/notification.png")}
+                  source={require("@/images/Icons/notification.png")}
                 ></Image>
               </View>
             </View>
@@ -39,23 +39,23 @@ function HomePage() {
             <View style={styles.headingTopBrandImageSection}>
               <Image
                 style={styles.ImageSize}
-                source={require("../images/BrandImages/nike.png")}
+                source={require("@/images/BrandImages/nike.png")}
               ></Image>
               <Image
                 style={styles.ImageSize}
-                source={require("../images/BrandImages/adidas.png")}
+                source={require("@/images/BrandImages/adidas.png")}
               ></Image>
               <Image
                 style={styles.ImageSize}
-                source={require("../images/BrandImages/puma.png")}
+                source={require("@/images/BrandImages/puma.png")}
               ></Image>
               <Image
                 style={styles.ImageSize}
-                source={require("../images/BrandImages/lv.png")}
+                source={require("@/images/BrandImages/lv.png")}
               ></Image>
               <Image
                 style={styles.ImageSize}
-                source={require("../images/BrandImages/nb.png")}
+                source={require("@/images/BrandImages/nb.png")}
               ></Image>
             </View>
           </View>

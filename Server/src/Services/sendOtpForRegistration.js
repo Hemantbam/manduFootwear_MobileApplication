@@ -1,5 +1,5 @@
 import { generateOtp } from "../Controller/ControllerHelper/otpGeneration.js";
-import { getUser } from "../Repository/authRepository.js";
+import { getUserByEmail } from "../Repository/userRepository.js";
 import {
   addOtp,
   getUserInOtpTable,
@@ -11,7 +11,7 @@ export const generateOtpForUserRegistration = async (userEmail) => {
   const otp = generateOtp();
   const status = "valid";
 
-  const checkRegisteredUser = await getUser(userEmail);
+  const checkRegisteredUser = await getUserByEmail(userEmail);
 
   if (checkRegisteredUser) {
     return {
