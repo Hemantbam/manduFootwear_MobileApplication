@@ -93,7 +93,10 @@ export const styles = StyleSheet.create({
   shoeDisplayBox: {
     top:-60,
     justifyContent:'center',
+    flexDirection: "row",
+    flexWrap:'wrap',
     gap:20
+
   },
   shoeView: {
     flexDirection: "row",

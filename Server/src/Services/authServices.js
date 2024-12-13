@@ -13,7 +13,6 @@ import { updateOtpStatus } from "../Repository/generateOtp.js";
 const key = "keyForFootwearMobileApplication986421@#$*_";
 
 export const registerUser = async (userDetails, otp) => {
-  console.log("asdsdsdds", userDetails, otp);
   try {
     const encodedPassword = await bcrypt.hash(userDetails.password, 10);
     const otpVerify = await verifyValidOtp(userDetails.email, otp);
@@ -29,19 +28,20 @@ export const registerUser = async (userDetails, otp) => {
     const createUser = await userRegister(userDetails, encodedPassword);
     console.log(createUser);
     if (createUser === true) {
+    await updateOtpStatus(userDetails.email);
       return {
         success: true,
         status: 200,
         message: "User created Successfully",
       };
     }
-    await updateOtpStatus(userDetails.email);
     return {
       success: false,
       status: 400,
       message: "Please enter the valid details",
     };
   } catch (error) {
+    console.log(error)
     if (error.isJoi) {
       return {
         success: false,
@@ -59,7 +59,7 @@ export const registerUser = async (userDetails, otp) => {
 };
 
 export const generateOtpForRegistration = async (userDetails) => {
-  console.log(userDetails);
+  console.log(userDetails.username);
   let checkExitingUser = await getUserByEmail(userDetails.email);
   if (checkExitingUser) {
     return {
@@ -85,6 +85,7 @@ export const generateOtpForRegistration = async (userDetails) => {
       message: "Otp sent successfully",
     };
   } catch (error) {
+    console.log(error)
     if (error.isJoi) {
       return {
         success: false,

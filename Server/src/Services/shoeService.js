@@ -1,13 +1,15 @@
+
 import { shoeDetailsValidationSchema } from "../../validation/shoeDetailValidation.js";
 import {
   addShoeDetails,
+  allShoesDetails,
   deleteShoeById,
   getShoeById,
   getShoeDetails,
   updateShoeDetailsById,
 } from "../Repository/shoeRepository.js";
 
-export const addNewShoes = async (shoeDetails) => {
+export const addNewShoes = async (shoeDetails, sizesWithStock) => {
   try {
     await shoeDetailsValidationSchema.validateAsync(shoeDetails);
 
@@ -23,7 +25,7 @@ export const addNewShoes = async (shoeDetails) => {
       };
     }
 
-    const addShoes = await addShoeDetails(shoeDetails);
+    const addShoes = await addShoeDetails(shoeDetails, sizesWithStock);
     if (!addShoes) {
       return {
         success: false,
@@ -37,6 +39,7 @@ export const addNewShoes = async (shoeDetails) => {
       message: "Shoes added successfully!!",
     };
   } catch (error) {
+    console.log(error)
     if (error.isJoi) {
       return {
         success: false,
@@ -77,6 +80,7 @@ export const getShoeDetailsById = async (shoeId) => {
       shoeDetails: result,
     };
   } catch (error) {
+    console.log(error)
     return {
       success: false,
       status: 500,
@@ -84,6 +88,25 @@ export const getShoeDetailsById = async (shoeId) => {
     };
   }
 };
+
+
+export const getAllShoesDetails=async()=>{
+const result=await allShoesDetails();
+console.log(result)
+if(!result){
+  return {
+    success:false,
+    status:404,
+    message:"No shoes found in database"
+  }
+}
+return {
+  success:true,
+  status:200,
+  message:"Shoes data fetched successfully",
+  details:result
+}
+}
 
 export const deleteShoesByID = async (shoeId) => {
   try {
@@ -162,3 +185,5 @@ export const updateShoeDetailsByShoeId = async (shoeDetails, shoeId) => {
     };
   }
 };
+
+

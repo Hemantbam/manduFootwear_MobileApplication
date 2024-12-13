@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styles } from "./ShoeDetailsStyle";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import Navigation from "@/components/NavigationBar/Navigation";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { useContext } from "react";
+import { UserRegistrationDetails } from "@/context/Context";
+
 function ShoeDetails() {
   const navigation = useNavigation();
+  const { shoeDetails } = useContext(UserRegistrationDetails);
 
   const handelAddToCart = () => {
     Toast.show({
@@ -16,9 +20,13 @@ function ShoeDetails() {
       visibilityTime: 2000,
     });
     setTimeout(() => {
-      navigation.navigate("cart");
+      // navigation.navigate("cart");
     }, 2500);
   };
+
+  useEffect(()=>{
+    console.log("sssssssssssss",shoeDetails)
+  },[])
   return (
     <>
       <View style={styles.ShoeBoxContainer}>
@@ -67,17 +75,13 @@ function ShoeDetails() {
         </View>
         <View style={styles.shoeDetails}>
           <View>
-            <Text style={styles.shoeHeadings}>Nike Air Max 90</Text>
-            <Text style={styles.shoeHeadings}>Men's Shoes</Text>
-            <Text style={styles.shoeHeadings}>Rs 6,500/-</Text>
+            <Text style={styles.shoeHeadings}>{shoeDetails[0].shoeName}</Text>
+            <Text style={styles.shoeHeadings}>{shoeDetails[0].gender}</Text>
+            <Text style={styles.shoeHeadings}>{shoeDetails[0].price}/-</Text>
           </View>
           <View>
             <Text style={styles.shoeDescription}>
-              Nothing as fly, nothing as comfortable, nothing as proven. The
-              Nike Air Max 90 stays true to its OG running roots with the iconic
-              Waffle sole, stitched overlays and classic TPU details. Classic
-              colors celebrate your fresh look while Max Air cushioning adds
-              comfort to the journey.
+             {shoeDetails[0].description} 
             </Text>
           </View>
         </View>

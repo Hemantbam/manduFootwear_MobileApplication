@@ -15,7 +15,6 @@ export const createUser = async (req, res) => {
 
 export const generateOtpForUserRegistration = async (req, res) => {
   const { userDetails } = req.body;
-  console.log(userDetails);
   const result = await generateOtpForRegistration(userDetails);
   return res
     .status(result.status)
@@ -24,6 +23,7 @@ export const generateOtpForUserRegistration = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email,password)
   const result = await userLogin(email, password);
   return res.status(result.status).json({
     message: result.message,

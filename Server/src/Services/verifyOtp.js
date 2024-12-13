@@ -16,6 +16,5 @@ export const verifyValidOtp = async (email, otp) => {
       return true;
     }
   }
-  await updateOtpStatus(email);
   return false;
 };

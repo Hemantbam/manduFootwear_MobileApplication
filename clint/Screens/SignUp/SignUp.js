@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { styles } from "./SignUpStyle";
 import {
   View,
@@ -9,34 +9,61 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { registerUser } from "@/api/authApi";
+import { UserRegistrationDetails } from "@/context/Context";
+import { useNavigation } from "@react-navigation/native";
+import { generateOtpForUserRegistration } from "@/api/authApi";
+import Toast from "react-native-toast-message";
+
 function SignUp() {
-  const [userDetails, setUserDetails] = useState({
-    username: "",
-    email: "",
-    mobileNumber: "",
-    gender: "",
-    occupation: "",
-    address: "",
-    password: "",
-  });
-  const handleUserRegistration = async () => {
+  const { userDetails, setUserDetails } = useContext(UserRegistrationDetails);
+  const navigation = useNavigation();
+
+  const handelOtpGeneration = async () => {
+    console.log(userDetails.email);
     try {
-      const result = await registerUser(userDetails);
+      const result = await generateOtpForUserRegistration(userDetails);
+      console.log(result);
       if (result.status == 200) {
-        Alert.alert("Success", "Account created successfully!");
+        Toast.show({
+          type: "success",
+          position: "top",
+          text1: "success",
+          text2: "Otp Sent to email successfully",
+        });
+        navigation.navigate("registrationValidation");
       } else {
-        Alert.alert("Error", result.message || "Registration failed.");
+        Toast.show({
+          type: "error",
+          position: "top",
+          text1: "Error",
+          text2: `${result.message || "Error in generating otp"}`,
+        });
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
-      console.error("Registration Error:", error);
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Error",
+        text2: "Something went wrong please try again",
+      });
+      console.error("Otp generation Error:", error);
     }
   };
+
+  const handelBackButton = () => {
+    navigation.navigate("login");
+  };
+
   return (
     <View style={styles.ContainerBox}>
       <View style={styles.headerBox}>
-        <Image source={require("@/images/Logo/logo.png")} />
+        <Image source={require("@/images/Logo/logo.png")} style={styles.logo} />
+        <TouchableOpacity onPress={handelBackButton}>
+          <Image
+            source={require("@/images/Icons/backIcon.png")}
+            style={styles.backIcon}
+          ></Image>
+        </TouchableOpacity>
       </View>
       <View>
         <View style={styles.backgroundBoxShadow}></View>
@@ -47,6 +74,7 @@ function SignUp() {
               <Text style={styles.signUpFormLabel}>Full Name</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Username"
                   value={userDetails.username}
                   onChangeText={(text) =>
@@ -54,9 +82,11 @@ function SignUp() {
                   }
                 />
               </View>
+
               <Text style={styles.signUpFormLabel}>Email</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Email"
                   keyboardType="email-address"
                   value={userDetails.email}
@@ -65,9 +95,11 @@ function SignUp() {
                   }
                 />
               </View>
+
               <Text style={styles.signUpFormLabel}>Mobile Number</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Mobile"
                   keyboardType="phone-pad"
                   value={userDetails.mobileNumber}
@@ -76,9 +108,11 @@ function SignUp() {
                   }
                 />
               </View>
+
               <Text style={styles.signUpFormLabel}>Gender</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Gender"
                   value={userDetails.gender}
                   onChangeText={(text) =>
@@ -86,9 +120,11 @@ function SignUp() {
                   }
                 />
               </View>
+
               <Text style={styles.signUpFormLabel}>Occupation</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Occupation"
                   value={userDetails.occupation}
                   onChangeText={(text) =>
@@ -96,9 +132,11 @@ function SignUp() {
                   }
                 />
               </View>
+
               <Text style={styles.signUpFormLabel}>Address</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Address"
                   value={userDetails.address}
                   onChangeText={(text) =>
@@ -106,9 +144,11 @@ function SignUp() {
                   }
                 />
               </View>
+
               <Text style={styles.signUpFormLabel}>Password</Text>
               <View style={styles.inputFields}>
                 <TextInput
+                  style={styles.textInputStyle}
                   placeholder="Password"
                   secureTextEntry={true}
                   value={userDetails.password}
@@ -123,7 +163,7 @@ function SignUp() {
         <View style={styles.registerButtonContainer}>
           <TouchableOpacity
             style={styles.registerBtn}
-            onPress={handleUserRegistration}
+            onPress={handelOtpGeneration}
           >
             <Text style={styles.registerText}>Register</Text>
           </TouchableOpacity>
@@ -132,4 +172,5 @@ function SignUp() {
     </View>
   );
 }
+
 export default SignUp;

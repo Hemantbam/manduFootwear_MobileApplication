@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styles } from "./HomePageStyle";
 import { View, Text, TextInput, Image } from "react-native";
 import ShoeView from "@/components/ShoeView/ShoeView";
 import Navigation from "@/components/NavigationBar/Navigation";
-
+import { getAllShoesDetails } from "../../api/shoesApi";
 
 function HomePage() {
+  const [shoesDetails, setShoesDetails] = useState([]);
+
+  const handelGetShoesDetails = async () => {
+    const result = await getAllShoesDetails();
+    setShoesDetails(result.shoesDetails);
+    console.log(shoesDetails);
+  };
+
+  useEffect(() => {
+    handelGetShoesDetails();
+  }, []);
   return (
     <>
       <View>
@@ -70,18 +81,26 @@ function HomePage() {
         </View>
 
         <View style={styles.shoeDisplayBox}>
-          <View style={styles.shoeView}>
-            <ShoeView />
-            <ShoeView />
-          </View>
-          <View style={styles.shoeView}>
-            <ShoeView />
-            <ShoeView />
-          </View>
+          {shoesDetails.length > 0 ? (
+            shoesDetails.map((shoe, index) => (
+              <View key={index} style={styles.shoeView}>
+                <ShoeView style={styles.shoeView}
+                  id={shoe.id}
+                  shoeName={shoe.shoeName}
+                  gender={shoe.gender}
+                  price={shoe.price}
+                />
+              </View>
+            ))
+          ) : (
+            <Text style={styles.emptyMessage}>
+              No shoes available at the moment.
+            </Text>
+          )}
         </View>
-        <View style={styles.footerSection}>
-           <Navigation/>
-        </View>
+      </View>
+      <View style={styles.footerSection}>
+        <Navigation />
       </View>
     </>
   );

@@ -11,9 +11,9 @@ export const UserRegistrationContextProvider = ({ children }) => {
     address: "",
     password: "",
   });
-
+  const [shoeDetails, setShoeDetails] = useState([])
   return (
-    <UserRegistrationDetails.Provider value={{ userDetails, setUserDetails }}>
+    <UserRegistrationDetails.Provider value={{ userDetails, setUserDetails, shoeDetails, setShoeDetails }}>
       {children}
     </UserRegistrationDetails.Provider>
   );

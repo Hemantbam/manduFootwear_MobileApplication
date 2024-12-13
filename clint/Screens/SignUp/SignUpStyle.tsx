@@ -6,9 +6,18 @@ export const styles = StyleSheet.create({
   },
   headerBox: {
     backgroundColor: "#FFD160",
-    height: 200,
+    height: 220,
     width: "100%",
     borderRadius: 20,
+    flexDirection:'row',
+    top:-20,
+  },
+  backIcon:{
+top:100,
+left:130,
+  },
+  logo:{
+top:20,
   },
   bodyBox: {
     position: "relative",

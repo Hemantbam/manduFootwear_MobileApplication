@@ -53,10 +53,20 @@ export const editUserDetails = async (userDetails, userId) => {
 };
 
 export const getUserByEmail = async (email) => {
-    const query = "select * from users where email=?";
-    const [result] = await dbConn.query(query, [email]);
-    if (result.length > 0) {
-      return result[0];
-    }
-    return false;
-  };
+  const query = "select * from users where email=?";
+  const [result] = await dbConn.query(query, [email]);
+  if (result.length > 0) {
+    return result[0];
+  }
+  return false;
+};
+
+export const resetPassword = async (email, password) => {
+  const query = "update users set password=? where email=?";
+  const result = await dbConn.query(query, [password, email]);
+  console.log(result)
+  if (result[0].affectedRows > 0) {
+    return true;
+  }
+  return false;
+};

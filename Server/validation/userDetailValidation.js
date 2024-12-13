@@ -14,7 +14,7 @@ export const userValidationSchema = Joi.object({
   }),
 
   mobileNumber: Joi.string()
-    .pattern(/^[0-9]{10}$/) 
+    .pattern(/^[0-9]{10}$/)
     .required()
     .messages({
       "string.pattern.base": "Mobile number must be 10 digits.",
@@ -59,3 +59,16 @@ export const userLoginInputValidation = Joi.object({
     "any.required": "Password is required.",
   }),
 });
+
+export const userPasswordValidation = Joi.string()
+  .min(8)
+  .pattern(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  )
+  .required()
+  .messages({
+    "string.min": "Password should have at least 8 characters.",
+    "string.pattern.base":
+      "Password must include at least one uppercase, one lowercase, one digit, and one special character.",
+    "any.required": "Password is required.",
+  });
