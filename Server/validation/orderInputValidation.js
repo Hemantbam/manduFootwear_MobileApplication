@@ -38,3 +38,50 @@ export const orderDetailInputValidation = Joi.object({
     "any.required": "Total price is required",
   }),
 });
+
+export const orderShoesSchema = Joi.array()
+  .items(
+    Joi.object({
+      shoeId: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+          'number.base': 'Shoe ID must be a number.',
+          'number.positive': 'Shoe ID must be a positive number.',
+          'any.required': 'Shoe ID is required.',
+        }),
+      quantity: Joi.number()
+        .integer()
+        .min(1)
+        .required()
+        .messages({
+          'number.base': 'Quantity must be a number.',
+          'number.min': 'Quantity must be positive number with at least 1.',
+          'any.required': 'Quantity is required.',
+        }),
+      size: Joi.number()
+        .integer()
+        .min(1)
+        .required()
+        .messages({
+          'number.base': 'Size must be a number.',
+          'number.min': 'Size must be at least 1.',
+          'any.required': 'Size is required.',
+        }),
+      unitPrice: Joi.number()
+        .precision(2)
+        .positive()
+        .required()
+        .messages({
+          'number.base': 'Unit Price must be a number.',
+          'number.positive': 'Unit Price must be a positive number.',
+          'any.required': 'Unit Price is required.',
+        }),
+    })
+  )
+  .required()
+  .messages({
+    'array.base': 'Order Shoes must be an array.',
+    'any.required': 'Order Shoes is required.',
+  });

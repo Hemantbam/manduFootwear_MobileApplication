@@ -1,3 +1,4 @@
+import res from "express/lib/response.js";
 import dbConn from "../../config/db/dbConn.js";
 
 export const addShoeDetails = async (shoeDetails, sizesWithStock) => {
@@ -104,6 +105,33 @@ export const updateShoeDetailsById = async (shoeDetails, shoeId) => {
     shoeDetails.material,
     shoeId,
   ]);
+  if (result[0].affectedRows > 0) {
+    return true;
+  }
+  return false;
+};
+
+export const getShoeSizeIdUsingShoeId = async (shoeId, shoeSize) => {
+  const query = "select * from shoesizes where shoeSizeId=? and shoeSizes=?";
+  const result = await dbConn.query(query, [shoeId, shoeSize]);
+  if (result[0].length > 0) {
+    return result[0];
+  }
+  return false;
+};
+
+export const increaseShoeStock = async (shoeSizeId, cancelledQuantity) => {
+  const query = "update shoesizestock set stock=stock+? where shoeSizeId=?";
+  const result = await dbConn.query(query, [cancelledQuantity, shoeSizeId]);
+  if (result[0].affectedRows > 0) {
+    return true;
+  }
+  return false;
+};
+
+export const decreaseShoeStock = async (shoeSizeId, cancelledQuantity) => {
+  const query = "update shoesizestock set stock=stock+? where shoeSizeId=?";
+  const result = await dbConn.query(query, [cancelledQuantity, shoeSizeId]);
   if (result[0].affectedRows > 0) {
     return true;
   }

@@ -4,7 +4,6 @@ const secretKey = "keyForFootwearMobileApplication986421@#$*_";
 
 const verifyToken = (req, res, next) => {
   const token = req.headers["authorization"];
-  console.log(token)
   if (!token) {
     return res.status(403).json({ message: "Token not found" });
   }

@@ -19,7 +19,7 @@ export const getAllShoes = async (req, res) => {
   const result = await getAllShoesDetails();
   return res
     .status(result.status)
-    .json({ message: result.message, shoesDetails: result.details });
+    .json({ message: result.message, shoesDetails: result.details , status:result.status});
 };
 
 export const getShoeById = async (req, res) => {
