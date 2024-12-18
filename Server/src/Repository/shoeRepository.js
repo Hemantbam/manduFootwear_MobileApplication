@@ -1,4 +1,4 @@
-import res from "express/lib/response.js";
+import { query } from "express";
 import dbConn from "../../config/db/dbConn.js";
 
 export const addShoeDetails = async (shoeDetails, sizesWithStock) => {
@@ -52,7 +52,7 @@ export const allShoesDetails = async () => {
   return false;
 };
 
-export const getShoeDetails = async (brandName, shoeName) => {
+export const shoeDetailsByName = async (brandName, shoeName) => {
   const query = "select * from shoedetails where brandName=? and shoeName=?";
   const result = await dbConn.query(query, [brandName, shoeName]);
   if (result[0].length > 0) {
@@ -61,7 +61,7 @@ export const getShoeDetails = async (brandName, shoeName) => {
   return false;
 };
 
-export const getShoeById = async (shoeId) => {
+export const shoeDetailsById = async (shoeId) => {
   const query = "select * from shoedetails where id=?";
   const result = await dbConn.query(query, [shoeId]);
 
@@ -134,6 +134,43 @@ export const decreaseShoeStock = async (shoeSizeId, cancelledQuantity) => {
   const result = await dbConn.query(query, [cancelledQuantity, shoeSizeId]);
   if (result[0].affectedRows > 0) {
     return true;
+  }
+  return false;
+};
+
+export const latestShoeDetails = async () => {
+  const query = "select * from shoedetails order by id desc limit 7";
+  const result = await dbConn.query(query);
+  if (result[0].length > 0) {
+    return result[0];
+  }
+  return false;
+};
+
+export const searchShoes = async (keyWord) => {
+  const query = `SELECT *, 
+       (CASE 
+          WHEN shoeName LIKE ? THEN 3 
+          WHEN brandName LIKE ? THEN 2 
+          ELSE 0 
+        END) AS relevance
+FROM mandufootwear.shoedetails
+WHERE shoeName LIKE ?
+   OR brandName LIKE ?
+   OR category LIKE ?
+   OR gender LIKE ?
+ORDER BY relevance DESC, id ASC limit 2`;
+
+  const result = await dbConn.query(query, [
+    keyWord,
+    keyWord,
+    keyWord,
+    keyWord,
+    keyWord,
+    keyWord,
+  ]);
+  if (result[0].length > 0) {
+    return result[0];
   }
   return false;
 };

@@ -13,16 +13,40 @@ import {
   manageDeliveredState,
   orderCancelledStatusUpdate,
   orderItemsDetails,
+  manageShippingState,
+  manageOutForDeliveryState,
+  userAllOrderDetailsById,
+  orderDetailsByContactNumber,
+  updateOrderDetailsById,
+  userOrderDetailsByOrderId,
 } from "../Repository/orderRepository.js";
 import {
   orderDetailInputValidation,
   orderShoesSchema,
+  orderUpdateValidation,
 } from "../../validation/orderInputValidation.js";
+import { contactNumberValidation } from "../../validation/inputValidation.js";
+import { sendMail } from "./sendMail.js";
+import { getUserById } from "../Repository/userRepository.js";
+import { updateOrderMessage } from "../../emailTemplates/OrderEmail/orderUpdateEmailTemplate.js";
+import { addNewOrderMessage } from "../../emailTemplates/OrderEmail/newOrderEmailTemplate.js";
+import { orderOutForDeliveryMessage } from "../../emailTemplates/OrderEmail/orderOutForDeliveryTemplate.js";
+import { orderDeliveredMessage } from "../../emailTemplates/OrderEmail/orderDeliveredEmailTemplate.js";
+import { orderCancelledMessage } from "../../emailTemplates/OrderEmail/orderCancelledEmailTemplate.js";
 
 export const addNewShoeOrderToDb = async (orderDetails, orderShoes) => {
   try {
     await orderDetailInputValidation.validateAsync(orderDetails);
     await orderShoesSchema.validateAsync(orderShoes);
+    const userDetails = await getUserById(orderDetails.userId);
+    if (!userDetails) {
+      return {
+        success: false,
+        status: 404,
+        message: "User not found",
+      };
+    }
+
     for (const shoe of orderShoes) {
       const shoeSizeId = await findShoeSizeId(shoe.shoeId, shoe.size);
       if (!shoeSizeId) {
@@ -60,6 +84,11 @@ export const addNewShoeOrderToDb = async (orderDetails, orderShoes) => {
         message: "Unable to place a new order. please try again",
       };
     }
+    const latestOrderDetails = await checkValidOrderIdInTable(addNewOrder);
+    const orderId = addNewOrder;
+    const subject = "Order Placed successfully";
+    const message = addNewOrderMessage(orderId, latestOrderDetails, orderShoes);
+    sendMail(userDetails[0].email, subject, message);
     return {
       success: true,
       status: 200,
@@ -81,8 +110,6 @@ export const addNewShoeOrderToDb = async (orderDetails, orderShoes) => {
     };
   }
 };
-
-
 
 export const allShippedOrderDetails = async () => {
   try {
@@ -189,22 +216,97 @@ export const allCancelledOrderDetails = async () => {
   }
 };
 
+export const manageOrderOutForDeliveryState = async (orderID) => {
+  try {
+    const checkValidOrder = await checkValidOrderIdInTable(orderID);
+    if (!checkValidOrder) {
+      return {
+        success: false,
+        status: 404,
+        message: `Order details with order id ${orderID} not found`,
+      };
+    }
+    const orderStatus = await checkOrderStatus(orderID);
+    if (orderStatus != "Shipped") {
+      return {
+        success: false,
+        status: 400,
+        message: `Order is currently '${orderStatus}', not 'Shipped'.`,
+      };
+    }
+
+    const updateState = await manageOutForDeliveryState(orderID);
+    if (!updateState) {
+      return {
+        success: false,
+        status: 400,
+        message: "Error in updating the order state for out for delivery",
+      };
+    }
+    const latestOrderState = await checkValidOrderIdInTable(orderID);
+    const [userDetails] = await getUserById(checkValidOrder.userId);
+    const subject = `${userDetails.username} your order is out for delivery`;
+    const message = orderOutForDeliveryMessage(
+      orderID,
+      latestOrderState,
+      userDetails.username
+    );
+    sendMail(userDetails.email, subject, message);
+    return {
+      success: true,
+      status: 200,
+      message: "The order has been sent out for the delivery",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
+
 export const manageOrderDeliveredState = async (orderId) => {
   try {
-    const checkOrderId = await checkValidOrderIdInTable(orderId);
-    if (!checkOrderId) {
+    const checkOrderDetails = await checkValidOrderIdInTable(orderId);
+    if (!checkOrderDetails) {
       return {
         success: false,
         status: 404,
         message: `Order details with order id ${orderId} not found`,
       };
     }
+    const orderStatus = await checkOrderStatus(orderId);
+    if (orderStatus === "Delivered") {
+      return {
+        success: false,
+        status: 400,
+        message: `Order is already delivered`,
+      };
+    }
+    if (orderStatus !== "OutForDelivery") {
+      return {
+        success: false,
+        status: 400,
+        message: `Order is currently '${orderStatus}', not 'OutForDelivery'.`,
+      };
+    }
     const result = await manageDeliveredState(orderId);
     if (result) {
+      const latestOrderStatus = await checkValidOrderIdInTable(orderId);
+      const [userDetails] = await getUserById(checkOrderDetails.userId);
+      const subject = `${userDetails.username} your order has been delivered`;
+      const message = orderDeliveredMessage(
+        orderId,
+        latestOrderStatus,
+        userDetails.username
+      );
+      sendMail(userDetails.email, subject, message);
       return {
         success: true,
         status: 200,
-        message: "Updated the order as delivered",
+        message: "The Order has been delivered",
       };
     }
     return {
@@ -222,22 +324,71 @@ export const manageOrderDeliveredState = async (orderId) => {
   }
 };
 
-export const manageOrderCancelState = async (orderId) => {
+export const manageOrderShippedState = async (orderId) => {
   try {
-    const orderDetails = await checkOrderStatus(orderId);
-    console.log(orderDetails);
-    if (!orderDetails) {
+    const checkOrderId = await checkValidOrderIdInTable(orderId);
+    if (!checkOrderId) {
       return {
         success: false,
         status: 404,
-        message: "Order details  not found",
+        message: `Order details with order id ${orderId} not found`,
       };
     }
-    if (orderDetails === "Shipped" || orderDetails === "Cancelled") {
+
+    const orderStatus = await checkOrderStatus(orderId);
+    if (orderStatus != "Pending") {
       return {
         success: false,
         status: 400,
-        message: `Unable to cancel the order. The order is already ${orderDetails}`,
+        message: `Order is currently '${orderStatus}', not 'Pending'.`,
+      };
+    }
+    const result = await manageShippingState(orderId);
+    if (result) {
+      return {
+        success: true,
+        status: 200,
+        message: "Updated the order as shipped",
+      };
+    }
+    return {
+      success: false,
+      success: 400,
+      message: "Error in updating the shipped state of the order",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
+
+export const manageOrderCancelState = async (orderId) => {
+  try {
+    const checkOrderDetails = await checkValidOrderIdInTable(orderId);
+    if (!checkOrderDetails) {
+      return {
+        success: false,
+        status: 404,
+        message: `Order details with order id ${orderId} not found`,
+      };
+    }
+    const orderStatus = await checkOrderStatus(orderId);
+    if (orderStatus === "Delivered" || orderStatus ==="Cancelled") {
+      return {
+        success: false,
+        status: 400,
+        message: `Unable to cancel the order. Order is already '${orderStatus}'.`,
+      };
+    }
+    if (orderStatus != "Pending") {
+      return {
+        success: false,
+        status: 400,
+        message: `Order is currently '${orderStatus}', not 'Pending'.`,
       };
     }
     const orderItems = await orderItemsDetails(orderId);
@@ -254,7 +405,6 @@ export const manageOrderCancelState = async (orderId) => {
       const shoeSize = orderItem.size;
       const quantity = orderItem.quantity;
       const shoeSizeId = await findShoeSizeId(shoeId, shoeSize);
-      console.log(shoeSizeId);
       if (!shoeSizeId) {
         return {
           success: false,
@@ -282,6 +432,15 @@ export const manageOrderCancelState = async (orderId) => {
         message: "Unable to update the order cancellation status",
       };
     }
+    const latestOrderDetails= await checkValidOrderIdInTable(orderId)
+    const userDetails = await getUserById(checkOrderDetails.userId);
+    const subject = `${userDetails[0].username} your order has been cancelled`;
+    const message = orderCancelledMessage(
+      orderId,
+      latestOrderDetails,
+      userDetails[0].username
+    );
+    sendMail(userDetails[0].email, subject, message);
     return {
       success: true,
       status: 200,
@@ -289,6 +448,127 @@ export const manageOrderCancelState = async (orderId) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
+
+export const userOrderDetails = async (userId) => {
+  try {
+    const result = await userAllOrderDetailsById(userId);
+    if (!result) {
+      return {
+        success: false,
+        status: 404,
+        message: "No previous order found",
+      };
+    }
+    return {
+      success: true,
+      status: 200,
+      message: "Data fetched of the user orders",
+      details: result,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
+
+export const ordersByContactNumber = async (contactNumber) => {
+  try {
+    await contactNumberValidation.validateAsync(contactNumber);
+    const result = await orderDetailsByContactNumber(contactNumber);
+    if (!result) {
+      return {
+        success: false,
+        status: 404,
+        message: "No order found",
+      };
+    }
+    return {
+      success: true,
+      status: 200,
+      message: "Data fetched of the order details",
+      details: result,
+    };
+  } catch (error) {
+    console.log(error);
+
+    if (error.isJoi) {
+      return {
+        success: false,
+        status: 400,
+        message: error.details.map((detail) => detail.message).join(", "),
+      };
+    }
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
+
+export const updateOrderDetails = async (orderId, orderUpdateDetails) => {
+  try {
+    await orderUpdateValidation.validateAsync(orderUpdateDetails);
+    const checkOrderDetails = await checkValidOrderIdInTable(orderId);
+    if (!checkOrderDetails) {
+      return {
+        success: false,
+        status: 404,
+        message: `Order details with order id ${orderId} not found`,
+      };
+    }
+    const result = await updateOrderDetailsById(orderId, orderUpdateDetails);
+    if (!result) {
+      return {
+        success: false,
+        status: 400,
+        message: "Unable to update details",
+      };
+    }
+    const orderDetails = await userOrderDetailsByOrderId(orderId);
+    if (!orderDetails) {
+      return {
+        success: false,
+        status: 404,
+        message: "Order details not found",
+      };
+    }
+
+    const userId = checkOrderDetails.userId;
+    const userDetails = await getUserById(userId);
+    const email = userDetails[0].email;
+
+    const subject = "Update in order details";
+
+    const message = updateOrderMessage(orderId, orderUpdateDetails);
+
+    sendMail(email, subject, message);
+    return {
+      success: true,
+      status: 200,
+      message: "Order details updated successfully",
+      details: result,
+    };
+  } catch (error) {
+    console.log(error);
+    if (error.isJoi) {
+      return {
+        success: false,
+        status: 400,
+        message: error.details.map((detail) => detail.message).join(", "),
+      };
+    }
     return {
       success: false,
       status: 500,

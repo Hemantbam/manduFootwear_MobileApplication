@@ -3,13 +3,15 @@ import {
   deleteShoesByID,
   getAllShoesDetails,
   getShoeDetailsById,
+  latestAddedShoes,
+  searchShoesByWord,
   updateShoeDetailsByShoeId,
 } from "../Services/shoeService.js";
 
 export const addShoes = async (req, res) => {
-  const { shoeDetails,sizesWithStock } = req.body;
+  const { shoeDetails, sizesWithStock } = req.body;
   console.log(shoeDetails);
-  const result = await addNewShoes(shoeDetails,sizesWithStock);
+  const result = await addNewShoes(shoeDetails, sizesWithStock);
   return res
     .status(result.status)
     .json({ message: result.message, status: result.status });
@@ -17,15 +19,17 @@ export const addShoes = async (req, res) => {
 
 export const getAllShoes = async (req, res) => {
   const result = await getAllShoesDetails();
-  return res
-    .status(result.status)
-    .json({ message: result.message, shoesDetails: result.details , status:result.status});
+  return res.status(result.status).json({
+    message: result.message,
+    shoesDetails: result.details,
+    status: result.status,
+  });
 };
 
 export const getShoeById = async (req, res) => {
   const { id } = req.params;
   const result = await getShoeDetailsById(id);
-  console.log(result)
+  console.log(result);
   return res.status(result.status).json({
     message: result.message,
     status: result.status,
@@ -48,4 +52,25 @@ export const updateShoeById = async (req, res) => {
   return res
     .status(result.status)
     .json({ message: result.message, status: result.status });
+};
+
+export const latestShoes = async (req, res) => {
+  const result = await latestAddedShoes();
+  return res.status(result.status).json({
+    message: result.message,
+    status: result.status,
+    shoesDetails: result.details,
+  });
+};
+
+export const searchShoes = async (req, res) => {
+  const { keyword } = req.body;
+  const result = await searchShoesByWord(keyword);
+  return res
+    .status(result.status)
+    .json({
+      message: result.message,
+      status: result.status,
+      shoeDetails: result.details,
+    });
 };

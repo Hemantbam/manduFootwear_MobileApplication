@@ -1,11 +1,12 @@
-
 import { shoeDetailsValidationSchema } from "../../validation/shoeDetailValidation.js";
 import {
   addShoeDetails,
   allShoesDetails,
   deleteShoeById,
-  getShoeById,
-  getShoeDetails,
+  latestShoeDetails,
+  searchShoes,
+  shoeDetailsById,
+  shoeDetailsByName,
   updateShoeDetailsById,
 } from "../Repository/shoeRepository.js";
 
@@ -13,7 +14,7 @@ export const addNewShoes = async (shoeDetails, sizesWithStock) => {
   try {
     await shoeDetailsValidationSchema.validateAsync(shoeDetails);
 
-    const checkShoeDetailsDb = await getShoeDetails(
+    const checkShoeDetailsDb = await shoeDetailsByName(
       shoeDetails.brandName,
       shoeDetails.shoeName
     );
@@ -39,7 +40,7 @@ export const addNewShoes = async (shoeDetails, sizesWithStock) => {
       message: "Shoes added successfully!!",
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (error.isJoi) {
       return {
         success: false,
@@ -56,7 +57,7 @@ export const addNewShoes = async (shoeDetails, sizesWithStock) => {
 };
 
 export const getShoeDetailsById = async (shoeId) => {
-  console.log(shoeId)
+  console.log(shoeId);
   if (isNaN(shoeId)) {
     return {
       success: false,
@@ -65,7 +66,7 @@ export const getShoeDetailsById = async (shoeId) => {
     };
   }
   try {
-    const result = await getShoeById(shoeId);
+    const result = await shoeDetailsById(shoeId);
     if (!result) {
       return {
         success: false,
@@ -80,7 +81,7 @@ export const getShoeDetailsById = async (shoeId) => {
       shoeDetails: result,
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       success: false,
       status: 500,
@@ -89,24 +90,23 @@ export const getShoeDetailsById = async (shoeId) => {
   }
 };
 
-
-export const getAllShoesDetails=async()=>{
-const result=await allShoesDetails();
-console.log(result)
-if(!result){
-  return {
-    success:false,
-    status:404,
-    message:"No shoes found in database"
+export const getAllShoesDetails = async () => {
+  const result = await allShoesDetails();
+  console.log(result);
+  if (!result) {
+    return {
+      success: false,
+      status: 404,
+      message: "No shoes found in database",
+    };
   }
-}
-return {
-  success:true,
-  status:200,
-  message:"Shoes data fetched successfully",
-  details:result
-}
-}
+  return {
+    success: true,
+    status: 200,
+    message: "Shoes data fetched successfully",
+    details: result,
+  };
+};
 
 export const deleteShoesByID = async (shoeId) => {
   try {
@@ -186,4 +186,54 @@ export const updateShoeDetailsByShoeId = async (shoeDetails, shoeId) => {
   }
 };
 
+export const latestAddedShoes = async () => {
+  try {
+    const result = await latestShoeDetails();
+    if (!result) {
+      return {
+        success: false,
+        status: 404,
+        message: "No latest added shoes found",
+      };
+    }
+    return {
+      success: true,
+      status: 200,
+      details: result,
+      message: "Data of latest added shoes fetched successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
 
+export const searchShoesByWord = async (keyWord) => {
+  try {
+    const search = await searchShoes(keyWord);
+    if (!search) {
+      return {
+        success: false,
+        status: 404,
+        message: "Matching result not found",
+      };
+    }
+    return {
+      success: true,
+      status: 200,
+      message: "Matching shoes found",
+      details: search,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    };
+  }
+};
